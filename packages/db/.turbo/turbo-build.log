@@ -1,0 +1,27 @@
+
+> @shoestore/db@ prebuild /home/ahmedzouaghi/Ahmed/Projects/nextjs projects/ShoeStore/packages/db
+> pnpm clean && pnpm db:generate-schemas
+
+
+> @shoestore/db@ clean /home/ahmedzouaghi/Ahmed/Projects/nextjs projects/ShoeStore/packages/db
+> rm -rf dist
+
+
+> @shoestore/db@ db:generate-schemas /home/ahmedzouaghi/Ahmed/Projects/nextjs projects/ShoeStore/packages/db
+> prisma format && prisma generate
+
+Prisma schema loaded from schema.prisma
+Formatted schema.prisma in 57ms 🚀
+Environment variables loaded from .env
+Prisma schema loaded from schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 177ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+
+> @shoestore/db@ build /home/ahmedzouaghi/Ahmed/Projects/nextjs projects/ShoeStore/packages/db
+> tsc
+
