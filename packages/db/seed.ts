@@ -1,131 +1,138 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+const SKILLS: { category: string; skills: string[] }[] = [
+  { category: "Frontend", skills: ["React", "TypeScript", "Tailwind CSS", "Nuxt.js"] },
+  { category: "Backend", skills: [".Net", "Python", "Flask", "FastAPI"] },
+  { category: "AI/ML", skills: ["LLMs", "ML.Net"] },
+  { category: "Mobile Dev", skills: ["Flutter"] },
+  { category: "Tools", skills: ["Git", "Docker", "Firebase"] },
+  { category: "Design", skills: ["Figma", "Adobe Ai", "Adobe Photoshop"] },
+  { category: "Scripting", skills: ["Python", "Bash"] },
+  { category: "Data Science", skills: ["Pandas", "NumPy", "Scikit-learn"] },
+  { category: "Video Editing", skills: ["Adobe Pr", "Davinci Resolve", "CapCut"] },
+];
+
+const EDUCATION = [
+  {
+    degree: "Master Degree in Artificial Intelligence",
+    institution: "Konya Technical University",
+    period: "2026",
+    description: "Accepted in Türkiye Bursları (Turkish Scholarships program)",
+  },
+  {
+    degree: "Bachelor in Computer Science",
+    institution: "Higher Institute of Computer Science and Multimedia of Sfax",
+    period: "2022-2025",
+    description: "Specialized in Big Data & Data Analysis",
+  },
+  {
+    degree: "Computer Sciences Baccalaureate",
+    institution: "Majida Boulila Sfax Secondary school",
+    period: "2022",
+    description: "Specialized in Computer Sciences",
+  },
+];
+
+const CERTIFICATIONS = ["Adobe Photoshop", "Adobe Premiere Pro", "Adobe Illustrator"];
+
+const SERVICES = [
+  {
+    title: "Full-Stack Web Development",
+    icon: "Code2",
+    description: "End-to-end web platforms built with modern, maintainable stacks.",
+    features: ["Responsive design", "API & database design", "Modern UI/UX", "Performance & Lighthouse"],
+  },
+  {
+    title: "Full-Stack Mobile Development",
+    icon: "Smartphone",
+    description: "Cross-platform mobile apps with a native feel and clean architecture.",
+    features: ["Cross-platform (Flutter)", "Offline-first", "Native performance", "Store deployment"],
+  },
+  {
+    title: "UI/UX Design",
+    icon: "PenTool",
+    description: "Interface and experience design from wireframes to polished prototypes.",
+    features: ["Wireframing & flows", "Design systems", "Prototyping in Figma", "Animation-based design"],
+  },
+  {
+    title: "Graphic Design",
+    icon: "Palette",
+    description: "Visual identity and content — logos, app icons, covers and social posts.",
+    features: ["Logo creation", "App icons", "Cover images", "Social media posts"],
+  },
+];
+
 async function main() {
-  const sneakers = await prisma.category.upsert({
-    where: { slug: "sneakers" },
+  // ── Admin user ──────────────────────────────────────────────
+  const adminEmail = (process.env.SEED_ADMIN_EMAIL || "ahmedzouaghi2003@gmail.com").toLowerCase();
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || "ChangeMe123!";
+  const hashed = await bcrypt.hash(adminPassword, 10);
+  await prisma.user.upsert({
+    where: { email: adminEmail },
     update: {},
-    create: { name: "Sneakers", slug: "sneakers" },
+    create: { name: "Ahmed Zouaghi", email: adminEmail, password: hashed },
   });
+  console.log("✔ admin user:", adminEmail);
 
-  const running = await prisma.category.upsert({
-    where: { slug: "running" },
+  // ── Site settings singleton ────────────────────────────────
+  await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
     update: {},
-    create: { name: "Running", slug: "running" },
+    create: {
+      id: "singleton",
+      aboutText:
+        "I'm Ahmed Zouaghi, a software developer focused on full-stack web and mobile development, UI/UX and graphic design. I turn ideas into polished, reliable products — from database to pixel.",
+      contactText:
+        "Ready to bring your ideas to life? Get in touch and let's make something amazing! Whether it's a new project, a collaboration, or just a friendly hello.",
+      primaryLocation: "Sfax, Tunisia",
+      currentResidency: "Konya, Türkiye",
+    },
   });
+  console.log("✔ site settings");
 
-  const products = [
-    {
-      name: "Air Stride Runner",
-      slug: "air-stride-runner",
-      description:
-        "Lightweight everyday runner with responsive cushioning and breathable mesh upper.",
-      basePrice: 129.99,
-      isFeatured: true,
-      isPublished: true,
-      categoryId: running.id,
-      images: [
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
-        "https://images.unsplash.com/photo-1606107557195-0f41c8383b8c?w=800&q=80",
-      ],
-      colors: [
-        { name: "Red", hex: "#c0392b", sizes: ["40", "41", "42", "43", "44"] },
-        { name: "White", hex: "#f5f5f5", sizes: ["40", "41", "42", "43", "44"] },
-      ],
-    },
-    {
-      name: "Urban Flex Low",
-      slug: "urban-flex-low",
-      description:
-        "Clean low-profile sneaker for casual wear. Soft insole and durable rubber outsole.",
-      basePrice: 89.99,
-      isFeatured: true,
-      isPublished: true,
-      categoryId: sneakers.id,
-      images: [
-        "https://images.unsplash.com/photo-1608231387042-66d1773070a6?w=800&q=80",
-      ],
-      colors: [
-        {
-          name: "Black",
-          hex: "#111111",
-          sizes: ["38", "39", "40", "41", "42", "43"],
+  // ── Skills ─────────────────────────────────────────────────
+  if ((await prisma.skillCategory.count()) === 0) {
+    let i = 0;
+    for (const group of SKILLS) {
+      await prisma.skillCategory.create({
+        data: {
+          name: group.category,
+          order: i++,
+          skills: { create: group.skills.map((name, order) => ({ name, order })) },
         },
-        {
-          name: "White",
-          hex: "#f5f5f5",
-          sizes: ["38", "39", "40", "41", "42", "43"],
-        },
-      ],
-    },
-    {
-      name: "Trail Grip Pro",
-      slug: "trail-grip-pro",
-      description:
-        "All-terrain shoe with extra grip and ankle support for outdoor trails.",
-      basePrice: 159.99,
-      isFeatured: false,
-      isPublished: true,
-      categoryId: running.id,
-      images: [
-        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d94?w=800&q=80",
-      ],
-      colors: [
-        { name: "Green", hex: "#4a7018", sizes: ["36", "37", "38", "39", "40"] },
-        { name: "Black", hex: "#111111", sizes: ["36", "37", "38", "39", "40"] },
-      ],
-    },
-    {
-      name: "Classic Court",
-      slug: "classic-court",
-      description: "Timeless court silhouette with premium leather finish.",
-      basePrice: 109.99,
-      isFeatured: false,
-      isPublished: true,
-      categoryId: sneakers.id,
-      images: [
-        "https://images.unsplash.com/photo-1525966222134-fcfa99b3944a?w=800&q=80",
-      ],
-      colors: [
-        {
-          name: "White",
-          hex: "#f5f5f5",
-          sizes: ["41", "42", "43", "44", "45"],
-        },
-        { name: "Navy", hex: "#1a2a4a", sizes: ["41", "42", "43", "44", "45"] },
-      ],
-    },
-  ];
-
-  let seeded = 0;
-  for (const { images, colors, ...data } of products) {
-    const existing = await prisma.product.findUnique({
-      where: { slug: data.slug },
-    });
-    if (existing) continue;
-
-    await prisma.product.create({
-      data: {
-        ...data,
-        images: {
-          create: images.map((url, order) => ({ url, order })),
-        },
-        colors: {
-          create: colors.map((color) => ({
-            name: color.name,
-            hex: color.hex,
-            sizes: {
-              create: color.sizes.map((size) => ({ size, stock: 20 })),
-            },
-          })),
-        },
-      },
-    });
-    seeded += 1;
+      });
+    }
+    console.log("✔ skills:", SKILLS.length, "categories");
   }
 
-  console.log("Seed complete:", seeded, "products created");
+  // ── Education ──────────────────────────────────────────────
+  if ((await prisma.education.count()) === 0) {
+    await prisma.education.createMany({
+      data: EDUCATION.map((e, order) => ({ ...e, order })),
+    });
+    console.log("✔ education:", EDUCATION.length);
+  }
+
+  // ── Certifications ────────────────────────────────────────
+  if ((await prisma.certification.count()) === 0) {
+    await prisma.certification.createMany({
+      data: CERTIFICATIONS.map((title, order) => ({ title, order })),
+    });
+    console.log("✔ certifications:", CERTIFICATIONS.length);
+  }
+
+  // ── Services ──────────────────────────────────────────────
+  if ((await prisma.service.count()) === 0) {
+    await prisma.service.createMany({
+      data: SERVICES.map((s, order) => ({ ...s, order })),
+    });
+    console.log("✔ services:", SERVICES.length);
+  }
+
+  console.log("Seed complete.");
 }
 
 main()

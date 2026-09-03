@@ -1,18 +1,13 @@
 /* eslint-disable no-var */
 import { PrismaClient } from "@prisma/client";
-import { PrismaNeon } from "@prisma/adapter-neon";
-import { neonConfig, Pool } from "@neondatabase/serverless";
-import ws from "ws";
 import { softDeleteExtension } from "./extensions";
 
-neonConfig.webSocketConstructor = ws;
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaNeon(pool);
-
+// Plain Prisma over a standard Postgres (TCP) connection — DATABASE_URL points at
+// Neon's pooler with sslmode=require. This works in every Node context (dev, `next
+// start`, build-time rendering, non-edge serverless). No WebSocket driver adapter,
+// which was flaky outside the Edge runtime.
 const extendedPrisma = new PrismaClient({
-  adapter,
-  log: process.env.NODE_ENV === "development" ? ["query", "error"] : ["error"],
+  log: process.env.NODE_ENV === "development" ? ["error"] : ["error"],
 }).$extends(softDeleteExtension);
 
 declare global {

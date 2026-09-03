@@ -1,20 +1,35 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "IT Vision — Software, Web & Embedded Development",
-  description: "We design and build software, web platforms, and embedded systems that turn ideas into reliable products.",
+  title: "Ahmed Zouaghi — Software Developer",
+  description:
+    "Portfolio of Ahmed Zouaghi — full-stack web & mobile developer, UI/UX and graphic designer.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// Runs before paint so a saved theme choice is applied with no flash.
+// Light is the default — only a stored 'dark' choice overrides it.
+const THEME_SCRIPT = `
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+`;
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-screen text-[var(--color-text)] antialiased">
         <div className="bg-blobs" aria-hidden="true">
           <div className="bg-blob bg-blob-1" />
@@ -22,9 +37,11 @@ export default function RootLayout({
           <div className="bg-blob bg-blob-3" />
           <div className="bg-blob bg-blob-4" />
         </div>
-        <Header />
         {children}
-        <Footer />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{ style: { borderRadius: "12px", fontSize: "14px" } }}
+        />
       </body>
     </html>
   );
