@@ -64,7 +64,8 @@ model SiteSettings {
   currentResidency String? @default("Konya, Türkiye")
 
   // Socials
-  githubUrl    String?
+  githubUrl    String? // personal GitHub profile
+  githubOrgUrl String? // organization GitHub
   linkedinUrl  String?
   instagramUrl String?
   youtubeUrl   String?

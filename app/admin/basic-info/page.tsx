@@ -33,6 +33,7 @@ export default async function BasicInfoPage() {
     primaryLocation: s.primaryLocation ?? "",
     currentResidency: s.currentResidency ?? "",
     githubUrl: s.githubUrl ?? "",
+    githubOrgUrl: s.githubOrgUrl ?? "",
     linkedinUrl: s.linkedinUrl ?? "",
     instagramUrl: s.instagramUrl ?? "",
     youtubeUrl: s.youtubeUrl ?? "",

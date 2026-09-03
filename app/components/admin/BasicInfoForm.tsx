@@ -135,6 +135,7 @@ export default function BasicInfoForm({ initial }: { initial: Settings }) {
           "primaryLocation",
           "currentResidency",
           "githubUrl",
+          "githubOrgUrl",
           "linkedinUrl",
           "instagramUrl",
           "youtubeUrl",
@@ -171,8 +172,11 @@ export default function BasicInfoForm({ initial }: { initial: Settings }) {
           <Labeled label="Current residency">
             <input {...bind("currentResidency")} />
           </Labeled>
-          <Labeled label="GitHub URL">
-            <input {...bind("githubUrl")} />
+          <Labeled label="GitHub — personal profile">
+            <input {...bind("githubUrl")} placeholder="https://github.com/username" />
+          </Labeled>
+          <Labeled label="GitHub — organization">
+            <input {...bind("githubOrgUrl")} placeholder="https://github.com/org" />
           </Labeled>
           <Labeled label="LinkedIn URL">
             <input {...bind("linkedinUrl")} />

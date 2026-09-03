@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { Github, Linkedin, Instagram, Youtube } from "lucide-react";
+import { Github, Building2, Linkedin, Instagram, Youtube } from "lucide-react";
 import type { SiteSettings } from "@/lib/content";
 
 export function Footer({ settings }: { settings: SiteSettings }) {
   const socials = [
-    { href: settings.githubUrl, Icon: Github, label: "GitHub" },
+    { href: settings.githubUrl, Icon: Github, label: "GitHub — personal" },
+    { href: settings.githubOrgUrl, Icon: Building2, label: "GitHub — organization" },
     { href: settings.linkedinUrl, Icon: Linkedin, label: "LinkedIn" },
     { href: settings.instagramUrl, Icon: Instagram, label: "Instagram" },
     { href: settings.youtubeUrl, Icon: Youtube, label: "YouTube" },
@@ -36,7 +37,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                   href={href!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={label}
+                  aria-label={label} title={label}
                   className="glass-subtle inline-flex h-10 w-10 items-center justify-center rounded-xl text-[var(--color-muted)] transition hover:text-[var(--color-accent)]"
                 >
                   <Icon size={18} />

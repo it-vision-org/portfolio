@@ -33,6 +33,7 @@ const NULLABLE_FIELDS = [
   "primaryLocation",
   "currentResidency",
   "githubUrl",
+  "githubOrgUrl",
   "linkedinUrl",
   "instagramUrl",
   "youtubeUrl",
